@@ -1,5 +1,6 @@
 services:
   books_backend_service:
+    image: books_image
     container_name: "books_backend_container"
     ports:
       - "7777:8000"
@@ -19,9 +20,9 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_USER: abcd
-      POSTGRES_PASSWORD: abcd
-      POSTGRES_DB: books_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "6432:5432"
     networks:
@@ -31,15 +32,13 @@ services:
 
   books_nginx:
     image: nginx
-    container_name: books_nginx
+    container_name: "books_nginx"
     ports:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     networks:
       - books_network
-    depends_on:
-      - books_backend_service
 
 networks:
   books_network:
