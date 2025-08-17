@@ -32,7 +32,7 @@ services:
 
   books_nginx:
     image: nginx
-    container_name: "books_nginx"
+    container_name: "books_nginx_container"
     ports:
       - "80:80"
     volumes:
