@@ -2,8 +2,6 @@ services:
   books_backend_service:
     image: books_image
     container_name: "books_backend_container"
-    ports:
-      - "7777:8000"
     build:
       context: .
     networks:
@@ -11,13 +9,14 @@ services:
     env_file:
       - .env
     environment:
-      DB_HOST: ${DB_HOST:-books_db_container}
-      DB_PORT: ${DB_PORT:-5432}
-      DB_USER: ${DB_USER:-main_user}
-      DB_PASS: ${DB_PASS:-main_user1234}
-      DB_NAME: ${DB_NAME:-book_db}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
     depends_on:
-      - books_db_service
+      books_db_service:
+        condition: service_healthy
 
   books_db_service:
     image: postgres:17
@@ -25,15 +24,20 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_USER: ${DB_USER:-main_user}
-      POSTGRES_PASSWORD: ${DB_PASS:-main_user1234}
-      POSTGRES_DB: ${DB_NAME:-book_db}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "6432:5432"
     networks:
       - books_network
     volumes:
       - books_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   books_nginx_service:
     image: nginx
@@ -46,6 +50,11 @@ services:
       - books_network
     depends_on:
       - books_backend_service
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 networks:
   books_network:
