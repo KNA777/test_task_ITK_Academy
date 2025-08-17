@@ -20,12 +20,17 @@ class BaseRepository:
         self.session = session
 
     async def get_all(self):
-        """Получает все записи из таблицы."""
+        """Получает все записи из таблицы.
+
+            Returns:
+                Список объектов BaseModel из библиотеки Pydantic.
+        """
         query = select(self.model)
         result = await self.session.execute(query)
-        return result.scalars().all()
+        books_models = result.scalars().all()
+        return [self.mapper.map_to_schemas_object(obj) for obj in books_models]
 
-    async def get_one_by_id(self, **filter_by):
+    async def get_one_by_id(self, **filter_by)-> BaseModel:
         """Получает одну запись по ID или другим фильтрам.
 
         Args:
@@ -45,7 +50,7 @@ class BaseRepository:
             raise ObjectNotFoundException
         return self.mapper.map_to_schemas_object(model)
 
-    async def create(self, data: BaseModel):
+    async def create(self, data: BaseModel)-> BaseModel:
         """Создает новую запись в БД.
 
         Args:
@@ -67,7 +72,7 @@ class BaseRepository:
     async def edit(self,
                    data: BaseModel,
                    exclude_unset: bool = False,
-                   **filter_by):
+                   **filter_by) -> BaseModel:
         """Обновляет существующую запись.
 
                 Args:
