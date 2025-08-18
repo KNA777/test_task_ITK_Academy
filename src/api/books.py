@@ -50,11 +50,11 @@ async def get_book(
             description=API_GET_ALL_DESCRIPTION)
 async def get_list_filtered_books(
         db: DBDep,
-        author: str | None = Query(None, description="Имя автора"),
+        author: str | None = Query(None, description="Имя/Фамиля автора"),
         title: str | None = Query(None, description="Название книги"),
         date_of_writing: int | None = Query(
             None, le=CURRENT_YEAR ,description="Год написания"),
-        page: int | None = Query(1, description="Номер страницы"),
+        page: int | None = Query(1, gt=0, description="Номер страницы"),
         per_page: int | None = Query(3, description="Количество книг на странице")
 ) -> dict[str, str | int | list[BooksResponse | None]]:
     books = await db.books.get_filtered_books_list(
