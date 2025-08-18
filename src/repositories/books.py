@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy import select, func
 
 from src.repositories.base import BaseRepository
@@ -6,6 +7,10 @@ from src.repositories.mapper.books import BooksMapper
 
 
 class BooksRepository(BaseRepository):
+    """Репозиторий для работы с книгами в базе данных.
+
+       Наследует базовый репозиторий и предоставляет методы для фильтрации книг.
+    """
 
     model = Book
     mapper = BooksMapper
@@ -18,7 +23,19 @@ class BooksRepository(BaseRepository):
             date_of_writing,
             limit,
             offset,
-    ):
+    ) -> list[BaseModel | None]:
+        """Получает отфильтрованный список книг с пагинацией.
+
+                Args:
+                    author: Фильтр по автору (регистронезависимый поиск по подстроке)
+                    title: Фильтр по названию (регистронезависимый поиск по подстроке)
+                    date_of_writing: Фильтр по году написания
+                    limit: Количество книг на странице
+                    offset: Смещение для пагинации (limit * (page - 1))
+
+                Returns:
+                    list[BaseModel]: Список книг в формате Pydantic-схемы
+        """
 
         query = select(self.model)
 

@@ -48,7 +48,7 @@ async def get_book(
             },
             summary=API_GET_ALL_SUMMARY,
             description=API_GET_ALL_DESCRIPTION)
-async def get_all_books(
+async def get_list_filtered_books(
         db: DBDep,
         author: str | None = Query(None, description="Имя автора"),
         title: str | None = Query(None, description="Название книги"),
