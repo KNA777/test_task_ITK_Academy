@@ -58,7 +58,7 @@ services:
 
 networks:
   books_network:
-    external: true
+    driver: bridge
 
 volumes:
   books_data:
