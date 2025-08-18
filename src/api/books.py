@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Path, Body
+from fastapi import APIRouter, Path, Body, Query
 
 from src.constants import (API_RESPONSE, HTTP_200, HTTP_201,
                            HTTP_404, HTTP_409, HTTP_422,
@@ -9,7 +9,7 @@ from src.constants import (API_RESPONSE, HTTP_200, HTTP_201,
                            API_PATCH_DESCRIPTION, API_DELETE_SUMMARY,
                            OPENAPI_EXAMPLES, API_DELETE_DESCRIPTION,
                            API_GET_ALL_DESCRIPTION, API_GET_ALL_SUMMARY,
-                           HTTP_200_LIST)
+                           HTTP_200_LIST, CURRENT_YEAR)
 from src.dependencies.dependencies import DBDep
 from src.exceptions.exceptions import (ObjectNotFoundException,
                                        ObjectNotFoundHTTPException,
@@ -48,8 +48,22 @@ async def get_book(
             },
             summary=API_GET_ALL_SUMMARY,
             description=API_GET_ALL_DESCRIPTION)
-async def get_all_books(db: DBDep) -> dict[str, str | int | list[BooksResponse | None]]:
-    books = await db.books.get_all()
+async def get_all_books(
+        db: DBDep,
+        author: str | None = Query(None, description="Имя автора"),
+        title: str | None = Query(None, description="Название книги"),
+        date_of_writing: int | None = Query(
+            None, le=CURRENT_YEAR ,description="Год написания"),
+        page: int | None = Query(1, description="Номер страницы"),
+        per_page: int | None = Query(3, description="Количество книг на странице")
+) -> dict[str, str | int | list[BooksResponse | None]]:
+    books = await db.books.get_filtered_books_list(
+        author=author,
+        title=title,
+        date_of_writing=date_of_writing,
+        limit=per_page,
+        offset=per_page * (page - 1)
+    )
     return {
         "status_code": HTTP_200,
         "books": books

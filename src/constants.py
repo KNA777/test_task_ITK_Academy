@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import status
 from fastapi.openapi.models import Example
 
@@ -194,3 +196,6 @@ API_PUT_SUMMARY = "Полное редактирование объекта"
 API_DELETE_DESCRIPTION = ("<h2>Эндпоинт для безвозвратного "
                           "удаления объекта модели Book из БД по ID.</h2>")
 API_DELETE_SUMMARY = "Удаление объекта"
+
+
+CURRENT_YEAR = datetime.now().year
