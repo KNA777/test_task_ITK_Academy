@@ -6,14 +6,12 @@ services:
       context: .
     networks:
       - books_network
-    env_file:
-      - .env-docker
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASS}
-      DB_NAME: ${DB_NAME}
+      DB_HOST: books_db_container
+      DB_PORT: 5432
+      DB_USER: main_user
+      DB_PASS: main_user1234
+      DB_NAME: book_db
     depends_on:
       books_db_service:
         condition: service_healthy
@@ -21,12 +19,10 @@ services:
   books_db_service:
     image: postgres:17
     container_name: "books_db_container"
-    env_file:
-      - .env-docker
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: main_user
+      POSTGRES_PASSWORD: main_user1234
+      POSTGRES_DB: book_db
     ports:
       - "6432:5432"
     networks:
