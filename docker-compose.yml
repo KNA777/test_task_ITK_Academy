@@ -7,7 +7,7 @@ services:
     networks:
       - books_network
     env_file:
-      - .env
+      - .env-docker
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -22,7 +22,7 @@ services:
     image: postgres:17
     container_name: "books_db_container"
     env_file:
-      - .env
+      - .env-docker
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}

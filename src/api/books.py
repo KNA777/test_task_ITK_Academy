@@ -48,11 +48,11 @@ async def get_book(
             },
             summary=API_GET_ALL_SUMMARY,
             description=API_GET_ALL_DESCRIPTION)
-async def get_all_books(db: DBDep) -> dict[str, str | int | list[BooksResponse]]:
+async def get_all_books(db: DBDep) -> dict[str, str | int | list[BooksResponse | None]]:
     books = await db.books.get_all()
     return {
         "status_code": HTTP_200,
-        "books_list": books
+        "books": books
     }
 
 
