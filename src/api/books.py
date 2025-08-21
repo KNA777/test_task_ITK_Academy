@@ -50,7 +50,7 @@ async def get_book(
             description=API_GET_ALL_DESCRIPTION)
 async def get_list_filtered_books(
         db: DBDep,
-        author: str | None = Query(None, description="Имя/Фамиля автора"),
+        author: str | None = Query(None, description="Имя/Фамилия автора"),
         title: str | None = Query(None, description="Название книги"),
         date_of_writing: int | None = Query(
             None, le=CURRENT_YEAR ,description="Год написания"),
