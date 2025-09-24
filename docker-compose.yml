@@ -2,8 +2,6 @@ services:
   books_backend_service:
     image: books_image
     container_name: "books_backend_container"
-    build:
-      context: .
     networks:
       - books_network
     environment:
